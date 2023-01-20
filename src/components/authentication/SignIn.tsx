@@ -12,6 +12,9 @@ import {
   emailValidation,
   passwordValidation
 } from '../../validations/autenticationValidations'
+import { signInWithEmailAndPassword } from 'firebase/auth'
+import { auth } from '../../firebase'
+import { useEffect } from 'react'
 
 const SignIn = () => {
   const navigate = useNavigate()
@@ -26,13 +29,28 @@ const SignIn = () => {
       password: ''
     },
     onSubmit: values => {
-      console.log('values', values)
-      navigate('/dashboard')
+      ;(async function () {
+        try {
+          await signInWithEmailAndPassword(auth, values.email, values.password)
+          navigate('/dashboard')
+        } catch (error) {
+          alert(error)
+        }
+      })()
     },
     validationSchema,
     validateOnBlur: false,
     validateOnChange: false
   })
+
+  useEffect(() => {
+    auth.onAuthStateChanged(user => {
+      if (user) {
+        navigate('/dashboard')
+      }
+    })
+  }, [])
+
   return (
     <Container maxWidth="lg">
       <form
