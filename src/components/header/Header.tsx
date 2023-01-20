@@ -6,12 +6,19 @@ import Button from '@mui/material/Button'
 import IconButton from '@mui/material/IconButton'
 import TextConstants from '../../constants/TextConstants'
 import { useNavigate } from 'react-router-dom'
+import { signOut } from 'firebase/auth'
+import { auth } from '../../firebase'
 
 const Header = () => {
   const navigate = useNavigate()
 
-  const handleClickSignOut = () => {
-    navigate('/')
+  const handleClickSignOut = async () => {
+    try {
+      await signOut(auth)
+      navigate('/')
+    } catch (error) {
+      alert(error)
+    }
   }
 
   return (
