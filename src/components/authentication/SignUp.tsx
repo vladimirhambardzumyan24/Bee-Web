@@ -11,8 +11,14 @@ import {
   emailValidation,
   passwordValidation
 } from '../../validations/autenticationValidations'
+import { useEffect } from 'react'
+import { auth } from '../../firebase'
+import { useNavigate } from 'react-router-dom'
+import { createUserWithEmailAndPassword } from 'firebase/auth'
 
 const SignUp = () => {
+  const navigate = useNavigate()
+
   const validationSchema = Yup.object().shape({
     email: emailValidation(),
     password: passwordValidation()
@@ -24,12 +30,31 @@ const SignUp = () => {
       password: ''
     },
     onSubmit: values => {
-      console.log('values', values)
+      ;(async function () {
+        try {
+          await createUserWithEmailAndPassword(
+            auth,
+            values.email,
+            values.password
+          )
+          navigate('/dashboard')
+        } catch (error) {
+          alert(error)
+        }
+      })()
     },
     validationSchema,
     validateOnBlur: false,
     validateOnChange: false
   })
+
+  useEffect(() => {
+    auth.onAuthStateChanged(user => {
+      if (user) {
+        navigate('/dashboard')
+      }
+    })
+  }, [])
 
   return (
     <Container maxWidth="lg">
