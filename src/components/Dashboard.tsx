@@ -7,7 +7,7 @@ const Dashboard = () => {
   return (
     <>
       <Header />
-      <Container maxWidth="lg">
+      <Container sx={{ marginTop: 15 }} maxWidth="lg">
         <Box
           component="div"
           sx={{
