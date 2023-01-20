@@ -1,6 +1,6 @@
 import { Button, Container } from '@mui/material'
 import { Box } from '@mui/system'
-import { onValue, ref, set } from 'firebase/database'
+import { onValue, ref, remove, set } from 'firebase/database'
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { uid } from 'uid'
@@ -39,9 +39,10 @@ const Dashboard = () => {
     })
   }
 
-  useEffect(() => {
-    console.log(blocksData)
-  }, [blocksData])
+  const handleDeleteBlock = (id: string) => {
+    remove(ref(db, `${auth.currentUser?.uid}/${id}`))
+  }
+
   return (
     <>
       <Header />
@@ -57,7 +58,11 @@ const Dashboard = () => {
           }}
         >
           {blocksData.map(block => (
-            <Editor key={block.id} blockData={block} />
+            <Editor
+              key={block.id}
+              blockData={block}
+              handleDeleteBlock={handleDeleteBlock}
+            />
           ))}
         </Box>
       </Container>
