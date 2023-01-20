@@ -53,6 +53,7 @@ const SignUp = () => {
           <CardContent>
             <TextField
               id="email"
+              type="text"
               label="email"
               value={formik.values.email}
               onChange={formik.handleChange}
@@ -64,6 +65,7 @@ const SignUp = () => {
             />
             <TextField
               id="password"
+              type="password"
               label="password"
               value={formik.values.password}
               onChange={formik.handleChange}
