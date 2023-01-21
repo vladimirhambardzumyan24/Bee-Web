@@ -1,23 +1,33 @@
-import Card from '@mui/material/Card'
-import { Slate, Editable, withReact } from 'slate-react'
 import { useMemo, useState } from 'react'
+import { Slate, Editable, withReact } from 'slate-react'
 import { createEditor, Descendant } from 'slate'
-import { BlockDataType } from '../global-components/GlobalTypes'
+import Card from '@mui/material/Card'
 import { Box } from '@mui/material'
+import { BlockDataType } from '../global-components/GlobalTypes'
 
 const Editor = ({
   blockData,
-  handleDeleteBlock
+  handleDeleteBlock,
+  updateBlockDataInDatabase
 }: {
   blockData: BlockDataType
   handleDeleteBlock: (id: string) => void
+  updateBlockDataInDatabase: (id: string, currentValue: Descendant[]) => void
 }) => {
   const editor = useMemo(() => withReact(createEditor()), [])
-  const [value, setValue] = useState<Descendant[]>([
-    {
-      children: [{ text: blockData.value }]
-    }
-  ])
+  const [value, setValue] = useState<Descendant[]>(blockData.value)
+  const [timer, setTimer] = useState<
+    string | number | NodeJS.Timeout | undefined
+  >(undefined)
+
+  const handleChange = (value: Descendant[]) => {
+    clearTimeout(timer)
+    const newTimer = window.setTimeout(() => {
+      updateBlockDataInDatabase(blockData.id, value)
+    }, 500)
+    setTimer(newTimer)
+    setValue(value)
+  }
 
   return (
     <Box
@@ -33,7 +43,7 @@ const Editor = ({
           padding: '10px 10px 20px 10px'
         }}
       >
-        <Slate editor={editor} value={value} onChange={v => setValue(v)}>
+        <Slate editor={editor} value={value} onChange={handleChange}>
           <Editable />
         </Slate>
       </Card>
