@@ -1,4 +1,5 @@
 import { useEffect } from 'react'
+import { useDispatch } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import * as Yup from 'yup'
 import { useFormik } from 'formik'
@@ -15,8 +16,11 @@ import {
   emailValidation,
   passwordValidation
 } from '../../validations/autenticationValidations'
+import { AppDispatch } from '../../store/store'
+import { setUserData } from '../../store/reducers/authenticationReducer'
 
 const SignUp = () => {
+  const dispatch = useDispatch<AppDispatch>()
   const navigate = useNavigate()
 
   const validationSchema = Yup.object().shape({
@@ -32,11 +36,13 @@ const SignUp = () => {
     onSubmit: values => {
       ;(async function () {
         try {
-          await createUserWithEmailAndPassword(
+          const data = await createUserWithEmailAndPassword(
             auth,
             values.email,
             values.password
           )
+          const userData = { uid: data.user.uid, email: data.user.email }
+          dispatch(setUserData(userData))
           navigate('/dashboard')
         } catch (error) {
           alert(error)
