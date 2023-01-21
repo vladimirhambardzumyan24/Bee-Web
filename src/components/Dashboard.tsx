@@ -1,15 +1,14 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Descendant } from 'slate'
-import { uid } from 'uid'
-import { Button, Container } from '@mui/material'
-import { Box } from '@mui/system'
+import { Button, Container, Grid } from '@mui/material'
 import { onValue, ref, remove, set, update } from 'firebase/database'
 import { BlockDataType } from '../global-components/GlobalTypes'
 import TextConstants from '../constants/TextConstants'
 import { auth, db } from '../firebase'
 import Editor from './Editor'
 import Header from './header/Header'
+import sortBlocksByText from '../helpers/sortBlocksByText'
 
 const Dashboard = () => {
   const navigate = useNavigate()
@@ -34,11 +33,11 @@ const Dashboard = () => {
   }, [])
 
   const writeToDatabase = () => {
-    const id = uid()
+    const id = new Date().getTime()
     set(ref(db, `${auth.currentUser?.uid}/${id}`), {
       value: [
         {
-          children: [{ text: TextConstants.BLOCK_DEFAULT_VALUE }]
+          children: [{ text: '' }]
         }
       ],
       id: id
@@ -59,30 +58,27 @@ const Dashboard = () => {
     })
   }
 
+  const sortBlocks = () => {
+    setBlocksData([...sortBlocksByText(blocksData)])
+  }
+
   return (
     <>
       <Header />
       <Container sx={{ marginTop: 15 }} maxWidth="lg">
         <Button onClick={writeToDatabase}>{TextConstants.BUTTONS.ADD}</Button>
-        <Box
-          component="div"
-          sx={{
-            display: 'flex',
-            flexWrap: 'wrap',
-            gap: '20px',
-            justifyContent: 'center',
-            marginTop: '10px'
-          }}
-        >
+        <Button onClick={sortBlocks}>{TextConstants.BUTTONS.SORT}</Button>
+        <Grid marginTop="10px" container spacing={2}>
           {blocksData.map(block => (
-            <Editor
-              key={block.id}
-              blockData={block}
-              handleDeleteBlock={handleDeleteBlock}
-              updateBlockDataInDatabase={updateBlockDataInDatabase}
-            />
+            <Grid key={block.id} item sm={4} xs={12} md={3}>
+              <Editor
+                blockData={block}
+                handleDeleteBlock={handleDeleteBlock}
+                updateBlockDataInDatabase={updateBlockDataInDatabase}
+              />
+            </Grid>
           ))}
-        </Box>
+        </Grid>
       </Container>
     </>
   )
