@@ -1,4 +1,6 @@
 export type BlockDataType = {
   id: string
-  value: string
+  value: {
+    children: { text: string }[]
+  }[]
 }
