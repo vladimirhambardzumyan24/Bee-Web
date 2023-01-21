@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react'
+import { useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import { Descendant } from 'slate'
-import { Button, Container, Grid } from '@mui/material'
+import { Button, Container, Grid, Typography } from '@mui/material'
 import { onValue, ref, remove, set, update } from 'firebase/database'
 import { BlockDataType } from '../global-components/GlobalTypes'
 import TextConstants from '../constants/TextConstants'
@@ -9,11 +10,14 @@ import { auth, db } from '../firebase'
 import Editor from './Editor'
 import Header from './header/Header'
 import sortBlocksByText from '../helpers/sortBlocksByText'
+import { RootState } from '../store/store'
 
 const Dashboard = () => {
   const navigate = useNavigate()
   const [blocksData, setBlocksData] = useState<BlockDataType[]>([])
-
+  const userData = useSelector(
+    (state: RootState) => state.authenticationState.userData
+  )
   useEffect(() => {
     auth.onAuthStateChanged(user => {
       if (user) {
@@ -65,6 +69,9 @@ const Dashboard = () => {
   return (
     <>
       <Header />
+      <Typography component="div" sx={{ padding: '10px' }}>
+        {userData?.email}
+      </Typography>
       <Container sx={{ marginTop: 15 }} maxWidth="lg">
         <Button onClick={writeToDatabase}>{TextConstants.BUTTONS.ADD}</Button>
         <Button onClick={sortBlocks}>{TextConstants.BUTTONS.SORT}</Button>
