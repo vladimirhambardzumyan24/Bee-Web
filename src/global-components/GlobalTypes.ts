@@ -4,3 +4,12 @@ export type BlockDataType = {
     children: { text: string }[]
   }[]
 }
+
+export type UserDataType = {
+  uid: string
+  email: string
+} | null
+
+export type AuthInitialState = {
+  userData: UserDataType
+}
