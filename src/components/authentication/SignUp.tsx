@@ -1,20 +1,20 @@
+import { useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
+import * as Yup from 'yup'
+import { useFormik } from 'formik'
 import Card from '@mui/material/Card'
 import CardActions from '@mui/material/CardActions'
 import CardContent from '@mui/material/CardContent'
 import Button from '@mui/material/Button'
-import { useFormik } from 'formik'
-import * as Yup from 'yup'
 import { Box, Link, TextField } from '@mui/material'
 import { Container } from '@mui/system'
+import { auth } from '../../firebase'
+import { createUserWithEmailAndPassword } from 'firebase/auth'
 import TextConstants from '../../constants/TextConstants'
 import {
   emailValidation,
   passwordValidation
 } from '../../validations/autenticationValidations'
-import { useEffect } from 'react'
-import { auth } from '../../firebase'
-import { useNavigate } from 'react-router-dom'
-import { createUserWithEmailAndPassword } from 'firebase/auth'
 
 const SignUp = () => {
   const navigate = useNavigate()

@@ -1,5 +1,5 @@
-import Dashboard from './components/Dashboard'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
+import Dashboard from './components/Dashboard'
 import SignIn from './components/authentication/SignIn'
 import SignUp from './components/authentication/SignUp'
 
