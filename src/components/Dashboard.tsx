@@ -1,11 +1,13 @@
-import { Button, Container } from '@mui/material'
-import { Box } from '@mui/system'
-import { onValue, ref, remove, set } from 'firebase/database'
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { Descendant } from 'slate'
 import { uid } from 'uid'
-import { auth, db } from '../firebase'
+import { Button, Container } from '@mui/material'
+import { Box } from '@mui/system'
+import { onValue, ref, remove, set, update } from 'firebase/database'
 import { BlockDataType } from '../global-components/GlobalTypes'
+import TextConstants from '../constants/TextConstants'
+import { auth, db } from '../firebase'
 import Editor from './Editor'
 import Header from './header/Header'
 
@@ -21,7 +23,7 @@ const Dashboard = () => {
           const data = snapshot.val()
           if (data !== null) {
             Object.values(data).map(textBlock => {
-              setBlocksData((prevData: any) => [...prevData, textBlock])
+              setBlocksData((prevData: any) => [textBlock, ...prevData])
             })
           }
         })
@@ -34,7 +36,11 @@ const Dashboard = () => {
   const writeToDatabase = () => {
     const id = uid()
     set(ref(db, `${auth.currentUser?.uid}/${id}`), {
-      value: 'Enter text',
+      value: [
+        {
+          children: [{ text: TextConstants.BLOCK_DEFAULT_VALUE }]
+        }
+      ],
       id: id
     })
   }
@@ -43,18 +49,28 @@ const Dashboard = () => {
     remove(ref(db, `${auth.currentUser?.uid}/${id}`))
   }
 
+  const updateBlockDataInDatabase = (
+    id: string,
+    currentValue: Descendant[]
+  ) => {
+    update(ref(db, `${auth.currentUser?.uid}/${id}`), {
+      value: currentValue,
+      id: id
+    })
+  }
+
   return (
     <>
       <Header />
       <Container sx={{ marginTop: 15 }} maxWidth="lg">
-        <Button onClick={writeToDatabase}>ADD</Button>
+        <Button onClick={writeToDatabase}>{TextConstants.BUTTONS.ADD}</Button>
         <Box
           component="div"
           sx={{
             display: 'flex',
             flexWrap: 'wrap',
             gap: '20px',
-            justifyContent: 'center'
+            marginTop: '10px'
           }}
         >
           {blocksData.map(block => (
@@ -62,6 +78,7 @@ const Dashboard = () => {
               key={block.id}
               blockData={block}
               handleDeleteBlock={handleDeleteBlock}
+              updateBlockDataInDatabase={updateBlockDataInDatabase}
             />
           ))}
         </Box>
