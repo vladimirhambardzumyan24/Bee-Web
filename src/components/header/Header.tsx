@@ -1,3 +1,4 @@
+import { useDispatch } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import AppBar from '@mui/material/AppBar'
 import Box from '@mui/material/Box'
@@ -8,13 +9,17 @@ import IconButton from '@mui/material/IconButton'
 import TextConstants from '../../constants/TextConstants'
 import { signOut } from 'firebase/auth'
 import { auth } from '../../firebase'
+import { AppDispatch } from '../../store/store'
+import { logOut } from '../../store/reducers/authenticationReducer'
 
 const Header = () => {
   const navigate = useNavigate()
+  const dispatch = useDispatch<AppDispatch>()
 
   const handleClickSignOut = async () => {
     try {
       await signOut(auth)
+      dispatch(logOut())
       navigate('/')
     } catch (error) {
       alert(error)
