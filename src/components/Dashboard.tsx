@@ -70,6 +70,7 @@ const Dashboard = () => {
             display: 'flex',
             flexWrap: 'wrap',
             gap: '20px',
+            justifyContent: 'center',
             marginTop: '10px'
           }}
         >
