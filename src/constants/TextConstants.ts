@@ -3,7 +3,8 @@ const TextConstants = {
     SIGN_IN: 'Sign in',
     SIGN_UP: 'Sign up',
     SIGN_OUT: 'Sign out',
-    ADD: 'ADD +'
+    ADD: 'ADD +',
+    SORT: 'Sort'
   },
 
   SIGN_UP: {
@@ -22,7 +23,7 @@ const TextConstants = {
     EMAIL: 'Please enter a valid email address.',
     REQUIRED: 'This field is required.'
   },
-  BLOCK_DEFAULT_VALUE: 'Enter text',
+  BLOCK_PLACEHOLDER: 'Enter text',
   BEE_WEB: 'Bee Web'
 }
 
